@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  factory-ui:
+    build: ./apps/factory-ui
+    command: pnpm dev --host
+    ports: ["5173:5173"]
+    volumes:
+      - ./apps/factory-ui:/usr/src/app
+      - /usr/src/app/node_modules  # node_modules 캐시
+    depends_on: [copilot-api]
+
+  copilot-api:
+    build: ./services/copilot-api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports: ["8000:8000"]
+    volumes:
+      - ./services/copilot-api:/app
+      - ./data:/data      # DuckDB 파일 공유
