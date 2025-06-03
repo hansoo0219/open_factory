@@ -1,0 +1,23 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with: { version: 8 }
+      - run: |
+          cd apps/factory-ui
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          cd services/copilot-api
+          pip install -r requirements.txt
+          python -m pip install pytest
+          pytest  # (아직 테스트 없으므로 통과)
